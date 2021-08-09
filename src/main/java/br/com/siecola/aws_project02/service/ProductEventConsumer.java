@@ -43,11 +43,11 @@ public class ProductEventConsumer {
                 productEvent.getProductId(),
                 snsMessage.getMessageId());
 
-        ProductEventLog productEventLog = buildProductEventLog(envelope, productEvent);
+        ProductEventLog productEventLog = buildProductEventLog(envelope, productEvent, snsMessage);
         productEventLogRepository.save(productEventLog);
     }
 
-    private ProductEventLog buildProductEventLog(Envelope envelope, ProductEvent productEvent){
+    private ProductEventLog buildProductEventLog(Envelope envelope, ProductEvent productEvent, SnsMessage sns){
         long timestamp = Instant.now().toEpochMilli();
 
         ProductEventLog pel = new ProductEventLog();
@@ -58,6 +58,8 @@ public class ProductEventConsumer {
         pel.setUsername(productEvent.getUsername());
         pel.setTimestamp(timestamp);
         pel.setTimestamp(Instant.now().plus(Duration.ofMinutes(10)).getEpochSecond());
+
+        pel.setMessageId(sns.getMessageId());
 
         return pel;
 
